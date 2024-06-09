@@ -97,8 +97,8 @@ const Shop = () => {
           </Stack>
           <Box>
             <Grid container spacing={3} sx={{ marginTop: 5 }}>
-              {products.map((prod) => (
-                <Grid key={prod.id} item xs={12} sm={6} md={4} lg={3}>
+              {products.map((prod) => {
+               return <Grid key={prod.id} item xs={12} sm={6} md={4} lg={3}>
                   <ProductCard
                   update={update}
                   setUpdate={setUpdate}
@@ -108,8 +108,9 @@ const Shop = () => {
                     }}
                     isWishlist={false}
                   />
+
                 </Grid>
-              ))}
+              })}
             </Grid>
           </Box>
         </Box>

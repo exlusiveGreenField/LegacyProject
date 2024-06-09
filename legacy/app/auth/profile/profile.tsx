@@ -1,11 +1,19 @@
-"use client"
+'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Card, CardContent, Typography, Avatar, Divider } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Typography,
+  Avatar,
+  Divider,
+} from '@mui/material';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import OrdersList from './Orders';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 import Navbar from '../../Navbar';
 import AddProduct from './AddProduct';
@@ -39,7 +47,9 @@ const UserProfile: React.FC = () => {
 
   const fetchUser = async (userId: number) => {
     try {
-      const response = await axios.get(`http://localhost:5000/Client/get/${userId}`);
+      const response = await axios.get(
+        `http://localhost:5000/Client/get/${userId}`
+      );
       if (response.data) {
         setUser(response.data);
       } else {
@@ -58,13 +68,32 @@ const UserProfile: React.FC = () => {
       localStorage.removeItem('role');
     }
     router.push('/auth/login');
+    localStorage.removeItem('wish');
   };
 
   return (
     <div>
       <Navbar />
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '90%', margin: '0 auto', padding: 3, marginTop: '50px' }}>
-        <Card sx={{ width: '100%', maxWidth: '600px', padding: 3, boxShadow: 3, mb: showOrders ? 3 : 0 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          width: '90%',
+          margin: '0 auto',
+          padding: 3,
+          marginTop: '50px',
+        }}
+      >
+        <Card
+          sx={{
+            width: '100%',
+            maxWidth: '600px',
+            padding: 3,
+            boxShadow: 3,
+            mb: showOrders ? 3 : 0,
+          }}
+        >
           <CardContent>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
               <Avatar sx={{ width: 56, height: 56, mr: 2 }} />
@@ -90,7 +119,9 @@ const UserProfile: React.FC = () => {
             <Typography variant="body1" sx={{ mb: 3 }}>
               *********
             </Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
+            <Box
+              sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}
+            >
               <Button
                 variant="contained"
                 sx={{ color: 'white', bgcolor: 'black' }}
@@ -126,7 +157,9 @@ const UserProfile: React.FC = () => {
           </CardContent>
         </Card>
         {showOrders && (
-          <Card sx={{ width: '100%', maxWidth: '600px', padding: 3, boxShadow: 3 }}>
+          <Card
+            sx={{ width: '100%', maxWidth: '600px', padding: 3, boxShadow: 3 }}
+          >
             <CardContent>
               <OrdersList />
             </CardContent>

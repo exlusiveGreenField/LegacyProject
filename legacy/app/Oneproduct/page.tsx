@@ -99,7 +99,7 @@ const One: React.FC = () => {
           showConfirmButton: false,
           timer: 1500,
         });
-      } catch (error) {
+      } catch (error : any) {
         console.error("Error adding to wishlist:", error);
         let errorMessage =
           "There was an error adding the item to your wishlist.";

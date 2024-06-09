@@ -9,12 +9,14 @@ interface Product {
   id: number;
   name: string;
   picture: string;
-  price: GLfloat;
-  stock: GLfloat;
-  description: string;
-  userId: number;
+  price: number;
   discountedPrice?: number;
   discount?: number;
+  stock: number;
+  userId: number;
+  rating: GLfloat;
+  numOfRating: number;
+  // quantity: number;
 }
 
 

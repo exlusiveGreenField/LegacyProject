@@ -18,6 +18,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useRouter } from 'next/navigation';
 import Shop from './shop/page';
+import Wishlist from './wishlist/page';
 interface Product {
   id: number;
   name: string;
@@ -40,7 +41,6 @@ interface ProductCardProps {
   update?: Boolean;
 }
 
-
 interface Item extends Product {
   quantity: number;
 }
@@ -51,8 +51,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   isWishlist,
   update,
   setUpdate,
- 
-
 }) => {
   const router = useRouter();
   const [AddToCart, setAddToCart] = useState(false);
@@ -61,11 +59,14 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const [newRate, setNewRate] = useState<GLfloat>(0);
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const [counter, setCounter] = useState(localStorage.getItem('counter') || 0);
+  const [wishes, setWishes] = useState(localStorage.getItem('wish') || 0);
 
   useEffect(() => {
     localStorage.setItem('counter', JSON.stringify(counter));
-
-  }, [counter]);
+    localStorage.setItem('wishes', JSON.stringify(wishes));
+  }, [counter, wishes]);
+  localStorage.removeItem('counter');
+  localStorage.removeItem('wishes');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -83,7 +84,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     e.stopPropagation();
     if (user) {
       let cartItems: Item[] = JSON.parse(localStorage.getItem('Items') || '[]');
-      setCounter(cartItems.length)
+      setCounter(cartItems.length);
       const existingItem = cartItems.find((item) => item.id === product.id);
       if (existingItem) {
         existingItem.quantity += 1;
@@ -114,6 +115,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
           userId: userId,
           productId: product.id,
         });
+        let wishlistItems: Item[] = JSON.parse(
+          localStorage.getItem('wish') || '[]'
+        );
+        const existingItem = wishlistItems.find(
+          (item) => item.id === product.id
+        );
+        if (!existingItem) {
+          wishlistItems.push({
+            ...product,
+            quantity: 1,
+          });
+          setWishes(wishlistItems.length);
+          localStorage.setItem('wish', JSON.stringify(wishlistItems));
+        }
 
         Swal.fire({
           icon: 'success',
@@ -175,10 +190,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
         await axios
           .put(`http://localhost:5000/Client/rati/${productId}`, {
             rating:
-              (product.rating * product.numOfRating + newRate) / numOfRate,
+              (product.rating * product.numOfRating + newRate) /
+              (numOfRate + 1),
           })
           .then(() => {
-            setUpdate ? setUpdate(!update) : null
+            setUpdate ? setUpdate(!update) : null;
           });
         // setNewRate(rate);
         Swal.fire({
@@ -246,7 +262,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
             '&:hover': { backgroundColor: 'black' },
           }}
           disableRipple
-          onClick={(e) =>{addToCart(e, product)} }
+          onClick={(e) => {
+            addToCart(e, product);
+          }}
         >
           Add to cart <ShoppingCartIcon sx={{ ml: 1 }} />
         </Button>
@@ -257,11 +275,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </Typography>
 
         <Rating
-          name="unique-rating"
+          name="simple-controlled"
           defaultValue={product.rating}
           precision={0.5}
           max={5}
-          value={product.rating}
+          value={newRate}
           onClick={(e) => {
             e.stopPropagation();
             const value = (e.target as HTMLInputElement).value;

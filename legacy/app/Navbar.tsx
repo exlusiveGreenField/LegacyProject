@@ -1,5 +1,4 @@
 'use client';
-
 import {
   Badge,
   AppBar,
@@ -9,8 +8,7 @@ import {
   InputBase,
   IconButton,
 } from '@mui/material';
-
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -18,16 +16,22 @@ import Link from 'next/link';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const Navbar: React.FC = () => {
- const [users,setUser]= useState({})
-  const user = localStorage.getItem('user');  
+  const [users, setUser] = useState({});
+  const user = localStorage.getItem('user');
 
-      const[counter,setCounter]=useState(JSON.parse(localStorage.getItem('Items')|| '[]').length)
+  const [counter, setCounter] = useState(
+    JSON.parse(localStorage.getItem('Items') || '[]').length
+  );
+  const [wishes, setWishes] = useState(
+    JSON.parse(localStorage.getItem('wish') || '[]').length
+  );
+  useEffect(() => {
+    setCounter(counter);
+    setWishes(wishes);
+    // const storedUser = localStorage.getItem('user') || '';
+    // setUser(storedUser);
+  }, [counter, wishes]);
 
-  useEffect(() => {  
-     setCounter(counter)
-    const storedUser = localStorage.getItem('user')|| '';
-    setUser(storedUser);
-  },[counter]);
   return (
     <AppBar
       position="sticky"
@@ -83,22 +87,34 @@ const Navbar: React.FC = () => {
             style={{ textDecoration: 'none', color: 'black' }}
           >
             <IconButton color="inherit">
-              <FavoriteBorderIcon />
+              <Badge
+                badgeContent={wishes}
+                color="primary"
+                sx={{ '& .MuiBadge-badge': { backgroundColor: 'red' } }}
+              >
+                <FavoriteBorderIcon />
+              </Badge>
             </IconButton>
           </Link>
-          <Link href='/cart'  style={{textDecoration:"none",color:"black"}}>
-          <IconButton color="inherit">
-            
-            <Badge badgeContent={counter} color="primary">
-            <ShoppingCartIcon />
-            </Badge>
-          </IconButton>
+          <Link href="/cart" style={{ textDecoration: 'none', color: 'black' }}>
+            <IconButton color="inherit">
+              <Badge
+                badgeContent={counter}
+                color="primary"
+                sx={{ '& .MuiBadge-badge': { backgroundColor: 'red' } }}
+              >
+                <ShoppingCartIcon />
+              </Badge>
+            </IconButton>
           </Link>
           {user && (
-            <Link href='/auth/profile'  style={{textDecoration:"none",color:"black"}}>
-            <IconButton color="inherit">
-              <AccountCircleIcon />
-            </IconButton>
+            <Link
+              href="/auth/profile"
+              style={{ textDecoration: 'none', color: 'black' }}
+            >
+              <IconButton color="inherit">
+                <AccountCircleIcon />
+              </IconButton>
             </Link>
           )}
         </Box>
