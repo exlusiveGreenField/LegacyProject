@@ -30,16 +30,19 @@ const OrdersList: React.FC = () => {
     const [orders, setOrders] = useState<Order[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
     const router = useRouter();
+const token =localStorage.getItem('token')
+console.log(token);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        
         if (token) {
             const decoded: User = jwtDecode(token);
             setUser(decoded);
             fetchOrders(decoded.id);
+          
         }
     }, []);
-
+    
     const fetchOrders = async (userId: number) => {
         try {
             const response = await axios.get<Order[]>("http://localhost:5000/admin/orders");
@@ -54,6 +57,7 @@ const OrdersList: React.FC = () => {
         axios.get<Product[]>('http://localhost:5000/Client/products')
             .then(response => {
                 setProducts(response.data);
+                
             })
             .catch(error => {
                 console.error('There was an error fetching the products!', error);
@@ -76,7 +80,7 @@ const OrdersList: React.FC = () => {
     };
 
     return (
-        <Box sx={{ width: '90%', margin: '0 auto', padding: 3, marginTop: '50px' }}>
+<Box sx={{ width: '90%', margin: '0 auto', padding: 3, marginTop: '50px' }}>
     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
         <Typography variant="h4" sx={{ textAlign: 'center' }}>My Orders List</Typography>
     </Box>
@@ -95,15 +99,15 @@ const OrdersList: React.FC = () => {
                                 const price = prodPrices(productId);
                                 const subtotal = price ? price * quantity : 0;
                                 return (
-                                    <Grid item xs={12} sm={6} md={4} key={productId} sx={{ display: 'flex', alignItems: 'center' }}>
-                                        <Card sx={{ display: 'flex', alignItems: 'center', padding: 2, boxShadow: 3 }}>
+                                    <Grid item xs={12} sm={6} md={4} key={productId}>
+                                        <Card sx={{ boxShadow: 3 }}>
                                             <CardMedia
                                                 component="img"
                                                 image={prodImages(productId)}
                                                 alt={prodNames(productId)}
-                                                sx={{ width: 120, height: 120, objectFit: 'cover', marginRight: 2 }}
+                                                sx={{ width: '100%', height: 120, objectFit: 'cover' }}
                                             />
-                                            <Box sx={{ flexGrow: 1 }}>
+                                            <Box sx={{ padding: 2 }}>
                                                 <Typography variant="body1">{prodNames(productId)}</Typography>
                                                 <Typography variant="body2">Quantity: {quantity}</Typography>
                                                 <Typography variant="body2">Price: ${price}</Typography>
@@ -117,7 +121,7 @@ const OrdersList: React.FC = () => {
                         <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
                             <b>Status:</b> {order.status}
                         </Typography>
-                        <Typography variant="h4" sx={{ float: 'right', color:'darkred' }}>
+                        <Typography variant="h4" sx={{ float: 'right', color: 'darkred' }}>
                             Total: ${order.totalAmount}
                         </Typography>
                     </CardContent>

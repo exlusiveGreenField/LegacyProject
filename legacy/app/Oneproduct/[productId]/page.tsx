@@ -9,6 +9,7 @@ import {
   TextField,
   Button,
   Divider,
+  Rating,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -33,6 +34,8 @@ interface Product {
   picture: string;
   userId: number;
   description: string;
+  rating:number;
+  numOfRating:number;
 }
 
 interface DecodedToken {
@@ -149,8 +152,16 @@ const One: React.FC = () => {
               {product.name}
             </Typography>
             <Typography variant="body1" sx={{ mr: 2, color: "green" }}>
-              {product.stock ? "In Stock" : "Out of Stock"}
-            </Typography>
+              {product.stock ? "In Stock" : "Out of Stock"}</Typography>
+              <Rating
+          name="simple-controlled"
+          precision={0.5}
+          defaultValue={product.rating}
+          max={5}
+         disabled
+        ></Rating>
+        
+            
             <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
               ${product.price}
             </Typography>

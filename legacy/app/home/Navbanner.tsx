@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { Box, List, ListItem, Button, IconButton } from '@mui/material';
 import Link from 'next/link';
+
+import Carousel from './Caroussel'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 const images = [
@@ -68,29 +70,7 @@ const Navbanner: React.FC = () => {
           </List>
         </Box>
         <Box component="main" sx={{ flexGrow: 1, p: 3, width: '55%' }}>
-          <div style={{ position: 'relative', width: '100%', height: '500px' }}>
-            {images.map((src, index) => (
-              <img
-                key={index}
-                src={src}
-                alt={`Slide ${index}`}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'fill',
-                  position: index === imgIndex ? 'static' : 'absolute',
-                  opacity: index === imgIndex ? 1 : 0,
-                  transition: 'opacity 0.5s ease-in-out',
-                }}
-              />
-            ))}
-            <IconButton onClick={()=>nextSlide(-1)} disabled={imgIndex===0} style={{ position: 'absolute', top: '50%', left: '20px', zIndex: 1 }}>
-              <ArrowBackIosIcon />
-            </IconButton>
-            <IconButton onClick={()=>nextSlide(1)} disabled={imgIndex===3} style={{ position: 'absolute', top: '50%', right: '20px', zIndex: 1 }}>
-              <ArrowForwardIosIcon />
-            </IconButton>
-          </div>
+          <Carousel />
         </Box>
       </Box>
       <hr />

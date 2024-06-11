@@ -137,12 +137,12 @@ const Signup: React.FC = () => {
                         onChange={(e) => setRole(e.target.value as string)}
                         label="Role"
                       >
-                        <MenuItem value="Client">Client</MenuItem>
-                        <MenuItem value="Seller">Seller</MenuItem>
+                        <MenuItem value="client">Client</MenuItem>
+                        <MenuItem value="seller">Seller</MenuItem>
                       </Select>
                     </FormControl>
 
-                    {role === 'Seller' ? (
+                    {role === 'seller' ? (
                       <TextField  
 
                         fullWidth

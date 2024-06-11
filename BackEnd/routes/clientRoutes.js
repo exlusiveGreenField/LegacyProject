@@ -6,11 +6,7 @@ const Order = require('../database/Order');
 const wishlist=require('../database/wishList')
 
 const { logIn, signUp } = require('../database/Auth');
-const {
-  validiSeller,
-  protect,
-  checkAdminRole,
-} = require('../MiddleWares/MiddleWares');
+
 
 router.get('/products', Product.getAllproducts);
 router.get('/products/FS', Product.getTopStockProducts);

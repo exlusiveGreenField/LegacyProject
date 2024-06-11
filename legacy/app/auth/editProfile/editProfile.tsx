@@ -18,13 +18,14 @@ const EditProfile: React.FC = () => {
   const { user, updateUser } = useProfile();
   const router = useRouter();
   const role =localStorage.getItem('role')||''
-
+  const [CIN,setCIN]=useState(0)
   
   useEffect(() => {
     if (user) {
       setUsername(user.userName || '');
       setEmail(user.email || '');
       setAddress(user.address || '');
+      setCIN(user.CIN||0)
     }
   }, [user]);
 
@@ -40,6 +41,7 @@ const EditProfile: React.FC = () => {
         userName: username,
         email: email,
         address: address,
+        CIN:CIN,
         ...(currentPassword && { currentPassword }),
         ...(newPassword && { newPassword }),
       });
@@ -63,12 +65,12 @@ const EditProfile: React.FC = () => {
   };
 
   return (
-    <div>
+    <div  style={{backgroundColor:'darkred',paddingBottom:'60px'}}>
       <Navbar />
-      <Container>
-        <Box mt={4}>
-          <div style={{ textAlign: 'center' }}>
-            <Typography variant="h5" gutterBottom>
+      <Container >
+        <Box mt={4} >
+          <div style={{ textAlign: 'center'  ,color:'white'}}>
+            <Typography variant="h4" gutterBottom>
               Edit Your Profile
             </Typography>
           </div>
@@ -83,8 +85,9 @@ const EditProfile: React.FC = () => {
                 borderRadius={2}
                 p={4}
                 width="100%"
+                
               >
-                <form onSubmit={handleProfileUpdate}>
+                <form onSubmit={handleProfileUpdate}  >
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                       <TextField
@@ -117,6 +120,13 @@ const EditProfile: React.FC = () => {
                         onChange={(e) => setAddress(e.target.value)}
                         sx={{ marginBottom: 2 }}
                       />}
+                      {role==='seller'&& <TextField fullWidth
+                        label="CIN"
+                        variant="outlined"
+                        value={CIN}
+                        onChange={(e) => setCIN(parseInt(e.target.value))}
+                        sx={{ marginBottom: 2 }} />}
+                      
                     </Grid>
                     <Grid item xs={12}>
                       <Typography variant="subtitle1">

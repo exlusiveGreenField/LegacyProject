@@ -10,6 +10,7 @@ interface User {
   email: string;
   role: string;
   address: string;
+  CIN:number;
 }
 
 interface ProfileContextType {
@@ -41,14 +42,19 @@ export const ProfileProvider: React.FC<ProfileProviderProps> = ({ children }) =>
 
   const updateUser = async (id: string, updatedUser: Partial<User>): Promise<User | undefined> => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+          throw new Error('No token found in localStorage');
+      }
+      const config = {
+          headers: {
+              'Authorization': `${token}`
+          }
+      };
       const response = await axios.put(
         `http://localhost:5000/Client/up/${id}`,
         updatedUser,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+       config
       );
       setUser(response.data);
       return response.data;

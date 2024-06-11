@@ -22,7 +22,16 @@ const OneOrder: React.FC = () => {
     if (!orderId) return;
     const fetchOrder = async () => {
       try {
-        const response = await axios.get<Order>(`http://localhost:5000/Admin/orders/${orderId}`);
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No token found in localStorage');
+        }
+        const config = {
+            headers: {
+                'Authorization': `${token}`
+            }
+        };
+        const response = await axios.get<Order>(`http://localhost:5000/Admin/orders/${orderId}`,config);
         setOrder(response.data);
       } catch (error) {
         console.error('Error fetching the order details:', error);

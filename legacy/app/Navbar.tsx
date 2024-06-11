@@ -9,27 +9,36 @@ import {
   InputBase,
   IconButton,
 } from '@mui/material';
-
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import Link from 'next/link';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useRouter } from 'next/navigation';
 
 const Navbar: React.FC = () => {
- const [user,setUser]= useState('')
-  const[counter,setCounter]=useState(JSON.parse(localStorage.getItem('Items')|| '[]').length)
+  const [user, setUser] = useState('');
+  const [counter, setCounter] = useState(
+    JSON.parse(localStorage.getItem('Items') || '[]').length
+  );
   const [wishes, setWishes] = useState(
     JSON.parse(localStorage.getItem('wish') || '[]').length
   );
-  useEffect(() => {  
-    
-    const storedUser = localStorage.getItem('user')|| '';
-    if(storedUser)setUser(JSON.parse(storedUser));
-    setCounter(counter)
+  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user') || '';
+    if (storedUser) setUser(JSON.parse(storedUser));
+    setCounter(counter);
     setWishes(wishes);
-  },[counter,wishes]);
+  }, [counter, wishes]);
+
+  const handleSearch = () => {
+    router.push(`/shop?search=${searchQuery}`);
+  };
+
   return (
     <AppBar
       position="sticky"
@@ -57,20 +66,21 @@ const Navbar: React.FC = () => {
           >
             <Button color="inherit">About</Button>
           </Link>
-          {user? <Link
-            href="/shop"
-            style={{ textDecoration: 'none', color: 'black' }}
-          >
-            <Button color="inherit">Shop</Button>
-          </Link>:
-          <Link
-            href="/auth/signUp"
-            style={{ textDecoration: 'none', color: 'black' }}
-          >
-            <Button color="inherit">SignUp</Button>
-          </Link>
-          }
-          
+          {user ? (
+            <Link
+              href="/shop"
+              style={{ textDecoration: 'none', color: 'black' }}
+            >
+              <Button color="inherit">Shop</Button>
+            </Link>
+          ) : (
+            <Link
+              href="/auth/signUp"
+              style={{ textDecoration: 'none', color: 'black' }}
+            >
+              <Button color="inherit">SignUp</Button>
+            </Link>
+          )}
         </Box>
         <Box
           sx={{
@@ -82,8 +92,15 @@ const Navbar: React.FC = () => {
             padding: '0 10px',
           }}
         >
-          <InputBase placeholder="What are you looking for?" />
-          <IconButton color="inherit">
+          <InputBase
+            placeholder="What are you looking for?"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleSearch();
+            }}
+          />
+          <IconButton color="inherit" onClick={handleSearch}>
             <SearchIcon />
           </IconButton>
         </Box>
@@ -92,7 +109,7 @@ const Navbar: React.FC = () => {
             href="/wishlist"
             style={{ textDecoration: 'none', color: 'black' }}
           >
-           <IconButton color="inherit">
+            <IconButton color="inherit">
               <Badge
                 badgeContent={wishes}
                 color="primary"
@@ -102,19 +119,25 @@ const Navbar: React.FC = () => {
               </Badge>
             </IconButton>
           </Link>
-          <Link href='/cart'  style={{textDecoration:"none",color:"black"}}>
-          <IconButton color="inherit">
-            
-            <Badge badgeContent={counter} color="primary" sx={{ '& .MuiBadge-badge': { backgroundColor: 'red' } }}>
-            <ShoppingCartIcon />
-            </Badge>
-          </IconButton>
+          <Link href="/cart" style={{ textDecoration: 'none', color: 'black' }}>
+            <IconButton color="inherit">
+              <Badge
+                badgeContent={counter}
+                color="primary"
+                sx={{ '& .MuiBadge-badge': { backgroundColor: 'red' } }}
+              >
+                <ShoppingCartIcon />
+              </Badge>
+            </IconButton>
           </Link>
           {user && (
-            <Link href='/auth/profile'  style={{textDecoration:"none",color:"black"}}>
-            <IconButton color="inherit">
-              <AccountCircleIcon />
-            </IconButton>
+            <Link
+              href="/auth/profile"
+              style={{ textDecoration: 'none', color: 'black' }}
+            >
+              <IconButton color="inherit">
+                <AccountCircleIcon />
+              </IconButton>
             </Link>
           )}
         </Box>
