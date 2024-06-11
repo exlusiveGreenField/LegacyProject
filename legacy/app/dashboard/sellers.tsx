@@ -66,7 +66,8 @@ const Sellers:React.FC = () => {
     }
   };
 
-  const handleDeleteUser = async (userId:number) => {
+  const DeleteUser = async (userId:number) => {
+    
     try {
       await axios.delete<Sellers[]>(`http://localhost:5000/admin/users/${userId}`,config);
       setSellers(sellers.filter(seller => seller.id !== userId));
@@ -75,7 +76,7 @@ const Sellers:React.FC = () => {
     }
   };
 
-  const handleSwitchToClient = async (userId:number) => {
+  const SwitchToClient = async (userId:number) => {
     try {
       await axios.put<Sellers[]>(`http://localhost:5000/admin/users/switch/${userId}`, { role: 'client' },config);
       fetchUsersByRole('seller');
@@ -114,14 +115,14 @@ const Sellers:React.FC = () => {
                   <IconButton
                     aria-label="delete"
                     style={styles.deleteButton}
-                    onClick={() => handleDeleteUser(seller.id)}
+                    onClick={() => DeleteUser(seller.id)}
                   >
                     <DeleteIcon />
                   </IconButton>
                   <Button
                     variant="contained"
                     style={styles.switchButton}
-                    onClick={() => handleSwitchToClient(seller.id)}
+                    onClick={() => SwitchToClient(seller.id)}
                   >
                     Switch to Client
                   </Button>

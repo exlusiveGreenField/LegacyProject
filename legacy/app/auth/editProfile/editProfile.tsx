@@ -29,7 +29,7 @@ const EditProfile: React.FC = () => {
     }
   }, [user]);
 
-  const handleProfileUpdate = async (e: React.FormEvent) => {
+  const ProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword !== confirmNewPassword) {
       setMessage('New passwords do not match.');
@@ -87,7 +87,7 @@ const EditProfile: React.FC = () => {
                 width="100%"
                 
               >
-                <form onSubmit={handleProfileUpdate}  >
+                <form onSubmit={ProfileUpdate}  >
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
                       <TextField

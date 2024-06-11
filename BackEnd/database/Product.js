@@ -115,5 +115,16 @@ module.exports = {
       console.error(error.message);
       res.status(500).send(error);
     }
-  },
+  }, getProductByUserId : async (req, res) => {
+    const userId = req.params.userId;
+    try {
+      const products = await db.Product.findAll({
+        where: { userId: userId },
+      });
+      res.json(products);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Error fetching products by user ID');
+    }
+  }
 };

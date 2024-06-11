@@ -96,7 +96,7 @@ const Wishlist = () => {
                   product={product}
                   isWishlist={true}
                   onClick={() => router.push(`/Oneproduct/${product.id}`)}
-                  onRemove={handleRemoveFromWishlist} // Pass the function as a prop
+                  onRemove={handleRemoveFromWishlist}
                 />
               </Grid>
             ))}

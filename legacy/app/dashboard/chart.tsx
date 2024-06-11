@@ -13,7 +13,7 @@ import {
   ArcElement,
 } from 'chart.js';
 import { Card, CardContent, Typography, Box, Grid ,Paper} from '@mui/material';
-
+import Extra from './extra';
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -152,6 +152,7 @@ const Charts: React.FC = () => {
         </Grid>
       </Grid>
     </Box>
+    <Extra />
     </Paper>
   );
 };

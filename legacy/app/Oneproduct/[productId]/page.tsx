@@ -57,7 +57,7 @@ const One: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Extract productId from the pathname
+
     const pathname = window.location.pathname;
     console.log(pathname);
     
@@ -158,7 +158,7 @@ const One: React.FC = () => {
           precision={0.5}
           defaultValue={product.rating}
           max={5}
-         disabled
+         readOnly
         ></Rating>
         
             
@@ -195,7 +195,7 @@ const One: React.FC = () => {
               }}
               onClick={addToCart}
             >
-              Add to Cart
+              Buy Now
             </Button>
             <IconButton onClick={addToWishlist}>
               <FavoriteBorderIcon />

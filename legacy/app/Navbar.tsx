@@ -35,7 +35,7 @@ const Navbar: React.FC = () => {
     setWishes(wishes);
   }, [counter, wishes]);
 
-  const handleSearch = () => {
+  const Search = () => {
     router.push(`/shop?search=${searchQuery}`);
   };
 
@@ -46,9 +46,11 @@ const Navbar: React.FC = () => {
     >
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Link href="/" style={{ textDecoration: 'none', color: 'black' }}>
           <Button color="inherit">
             <b>exclusive</b>
           </Button>
+          </Link>
         </Box>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Link href="/" style={{ textDecoration: 'none', color: 'black' }}>
@@ -97,10 +99,10 @@ const Navbar: React.FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') handleSearch();
+              if (e.key === 'Enter') Search();
             }}
           />
-          <IconButton color="inherit" onClick={handleSearch}>
+          <IconButton color="inherit" onClick={Search}>
             <SearchIcon />
           </IconButton>
         </Box>
