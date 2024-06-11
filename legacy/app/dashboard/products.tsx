@@ -177,7 +177,7 @@ const ProductsTable: React.FC = () => {
         currentProduct,config
       );
       fetchProducts();
-      handleCloseModify();
+      CloseModify();
     } catch (error) {
       console.error("Error updating product:", error);
     }
@@ -188,18 +188,18 @@ const ProductsTable: React.FC = () => {
       const { userId, ...productData } = newProduct;
       await axios.post<Product[]>("http://localhost:5000/admin/products/add", productData);
       fetchProducts();
-      handleCloseAdd();
+      CloseAdd();
     } catch (error) {
       console.error("Error adding product:", error);
     }
   };
 
-  const handleOpenModify = (product: Product) => {
+  const OpenModify = (product: Product) => {
     setCurrentProduct(product);
     setModify(true);
   };
 
-  const handleCloseModify = () => {
+  const CloseModify = () => {
     setModify(false);
     setCurrentProduct({
       id: 0,
@@ -212,11 +212,11 @@ const ProductsTable: React.FC = () => {
     });
   };
 
-  const handleOpenAdd = () => {
+  const OpenAdd = () => {
     setAddModalOpen(true);
   };
 
-  const handleCloseAdd = () => {
+  const CloseAdd = () => {
     setAddModalOpen(false);
     setNewProduct({
       name: "",
@@ -258,7 +258,7 @@ const ProductsTable: React.FC = () => {
                 <TableCell>{product.stock}</TableCell>
                 <TableCell>{product.description}</TableCell>
                 <TableCell>
-                  <IconButton onClick={() => handleOpenModify(product)}>
+                  <IconButton onClick={() => OpenModify(product)}>
                     <Edit sx={{ color: 'black' }} />
                   </IconButton>
                   <IconButton onClick={() => deleteProduct(product.id)}>
@@ -270,7 +270,7 @@ const ProductsTable: React.FC = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Modal open={modify} onClose={handleCloseModify}>
+      <Modal open={modify} onClose={CloseModify}>
         <Box sx={styles.modal}>
           <Typography variant="h6" gutterBottom>
             Modify Product
@@ -330,7 +330,7 @@ const ProductsTable: React.FC = () => {
           </Button>
         </Box>
       </Modal>
-      <Modal open={addModalOpen} onClose={handleCloseAdd}>
+      <Modal open={addModalOpen} onClose={CloseAdd}>
         <Box sx={styles.modal}>
           <Typography variant="h6" gutterBottom>
             Add Product

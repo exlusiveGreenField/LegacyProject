@@ -14,4 +14,5 @@ router.put('/:userid',  User.updateUser);
 router.post('/add', checkSellerRole,Product.addProduct);
 router.post('/signup', signUp);
 router.post('/login', logIn);
+router.get('/getByuser/:userId',Product.getProductByUserId)
 module.exports = router;

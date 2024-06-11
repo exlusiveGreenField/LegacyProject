@@ -87,7 +87,7 @@ const Shop = () => {
   return (
     <div  style={{backgroundColor:"darkred"}}> 
       <Navbar />
-      <div style={{width:'90%' , marginLeft:"80px",backgroundColor:"darkred"}} >
+      <div style={{width:'90%' , marginLeft:"80px",backgroundColor:"darkred",paddingBottom:'100px'}} >
       <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
         <Box>
           <Typography

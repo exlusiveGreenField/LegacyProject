@@ -12,7 +12,9 @@ interface Product{
     category:string,
     stock:number,
     picture:string,
-    userId:number
+    userId:number,
+    rating:number,
+    numOfRating:number,
  }
 
 const Thismonth:React.FC = () => {
@@ -51,6 +53,9 @@ const Thismonth:React.FC = () => {
               product={product}
                onClick={() =>{ router.push(`/Oneproduct/${product.id}`)}  }
               isWishlist={false}
+              onRemove={()=>{
+
+              }}
             />
           </Grid>
         ))}

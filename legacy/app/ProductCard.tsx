@@ -17,9 +17,9 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useRouter } from 'next/navigation';
 import { Tooltip } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles((theme) => ({}));
+
+
 
 interface Product {
   id: number;
@@ -55,7 +55,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   setUpdate,
   onRemove,
 }) => {
-  // const classes = useStyles();
+ 
   const router = useRouter();
   const [AddToCart, setAddToCart] = useState(false);
   const [userId, setUserId] = useState<number | null>(null);
@@ -202,7 +202,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     const productId: number = product.id;
     console.log(rate, 'ratee');
 
-    // Calculate the new rating
+  
     const newRating =
       (product.rating * product.numOfRating + rate) / (product.numOfRating + 1);
 
@@ -213,9 +213,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
         await axios
           .put(`http://localhost:5000/Client/rati/${productId}`, {
             rating: clampedRating,
-
-            // (product.rating * product.numOfRating + rate) /
-            // (product.numOfRating + 1),
           })
           .then(() => {
             setUpdate ? setUpdate(!update) : null;

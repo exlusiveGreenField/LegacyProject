@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import { Box, Button, Card, CardContent, Typography, Avatar, Divider } from '@mui/material';
@@ -8,26 +8,26 @@ import OrdersList from './Orders';
 import {jwtDecode} from 'jwt-decode';
 import Navbar from '../../Navbar';
 import AddProduct from './AddProduct';
+import ProductsManagement from './MyProducts'; // Import the ProductsManagement component
 
 interface User {
   id: number;
   userName: string;
   email: string;
   address: string;
-  CIN:number;
-  
+  CIN: number;
 }
 
 const UserProfile: React.FC = () => {
   const [user, setUser] = useState<Partial<User>>({});
   const [showOrders, setShowOrders] = useState<boolean>(false);
-  const [open, setOpen] = useState<boolean>(false);
+  const [openAddProduct, setOpenAddProduct] = useState<boolean>(false);
+  const [openProductsManagement, setOpenProductsManagement] = useState<boolean>(false);
   const [role, setRole] = useState<string | null>(null);
   const router = useRouter();
 
-
   useEffect(() => {
-    setRole(localStorage.getItem('role'))
+    setRole(localStorage.getItem('role'));
     const token = localStorage.getItem('token');
     if (token) {
       const decoded: any = jwtDecode(token);
@@ -40,9 +40,7 @@ const UserProfile: React.FC = () => {
     try {
       const response = await axios.get(`http://localhost:5000/Client/get/${userId}`);
       if (response.data) {
-        setUser(response.data)
-        
-        
+        setUser(response.data);
       } else {
         console.error('No user data found in response:', response);
       }
@@ -54,101 +52,98 @@ const UserProfile: React.FC = () => {
   const logOut = () => {
     setUser({});
     if (typeof window !== 'undefined') {
-      localStorage.clear()
+      localStorage.clear();
     }
     router.push('/auth/login');
   };
 
   return (
-    <div style={{backgroundColor:'darkred',}}>
-  <Navbar />
-  <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '90%', margin: '0 auto', padding: 3, marginTop: '50px' }}>
-    <Card sx={{ width: '100%', maxWidth: '1200px', padding: 3, boxShadow: 3, mb: showOrders ? 3 : 0  }}>
-      <CardContent>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 3  }}>
-          <Avatar sx={{ width: 86, height: 86, mr: 2 }} />
-          <Box sx={{ flexGrow: 1 }}>
-            <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-              {user.userName}
-            </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography variant="body1" color="textSecondary" sx={{ mr: 2 }}>
-                {user.email}
+    <div style={{ backgroundColor: 'darkred' }}>
+      <Navbar />
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '90%', margin: '0 auto', padding: 3, marginTop: '50px' }}>
+        <Card sx={{ width: '100%', maxWidth: '1200px', padding: 3, boxShadow: 3, mb: showOrders ? 3 : 0 }}>
+          <CardContent>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+              <Avatar sx={{ width: 86, height: 86, mr: 2 }} />
+              <Box sx={{ flexGrow: 1 }}>
+                <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+                  {user.userName}
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Typography variant="body1" color="textSecondary" sx={{ mr: 2 }}>
+                    {user.email}
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    sx={{ color: 'white', bgcolor: 'red', '&:hover': { backgroundColor: 'darkred' } }}
+                    onClick={logOut}
+                  >
+                    Logout
+                  </Button>
+                </Box>
+              </Box>
+            </Box>
+            <Divider sx={{ mb: 3 }} />
+            {role === 'client' && (
+              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                Address: {user.address}
               </Typography>
+            )}
+            {role === 'seller' && (
+              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                CIN: {user.CIN}
+              </Typography>
+            )}
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+              Password: ********
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
               <Button
                 variant="contained"
-                sx={{ color: 'white', bgcolor: 'red' ,
-                  '&:hover': {
-                            backgroundColor: 'darkred',
-                          }}}
-                onClick={logOut}
+                sx={{ color: 'white', bgcolor: 'black', mr: 1, '&:hover': { backgroundColor: 'white', color: 'black' } }}
+                onClick={() => router.push('/auth/editProfile')}
               >
-                Logout
+                Modify Info
+              </Button>
+              {role === 'seller' && (
+                <div>
+                  <Button
+                    variant="contained"
+                    sx={{ color: 'white', bgcolor: 'black', mr: 1, '&:hover': { backgroundColor: 'white', color: 'black' } }}
+                    onClick={() => setOpenAddProduct(true)}
+                  >
+                    Add Product
+                  </Button>
+                  <Button
+                    variant="contained"
+                    sx={{ color: 'white', bgcolor: 'black', mr: 1, '&:hover': { backgroundColor: 'white', color: 'black' } }}
+                    onClick={() => setOpenProductsManagement(true)}
+                  >
+                    My Products
+                  </Button>
+                </div>
+              )}
+              <Button
+                variant="contained"
+                sx={{ color: 'white', bgcolor: 'black', mr: 1, '&:hover': { backgroundColor: 'white', color: 'black' } }}
+                onClick={() => setShowOrders(!showOrders)}
+              >
+                {showOrders ? 'Hide Orders' : 'Check Orders'}
               </Button>
             </Box>
-          </Box>
-        </Box>
-        <Divider sx={{ mb: 3 }} />
-         {role==='client'&&<Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-         Address:{user.address}</Typography>}
-         {role==='seller'&&<Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-         CIN:{user.CIN}</Typography>}
-        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-          Password: ********  
-        </Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
-          <Button
-            variant="contained"
-            sx={{ color: 'white', bgcolor: 'black', mr: 1,
-              '&:hover': {
-                            backgroundColor: 'white',
-                            color: 'black',
-                          } }}
-            onClick={() => router.push('/auth/editProfile')}
-          >
-            Modify Info
-          </Button>
-          {role === 'seller' ? (
-            <Button
-              variant="contained"
-              sx={{ color: 'white', bgcolor: 'black', mr: 1 ,
-                '&:hover': {
-                            backgroundColor: 'white',
-                            color: 'black',
-                          }
-              }}
-              onClick={() => setOpen(true)}
-            >
-              Add Product
-            </Button>
-          ) : (
-            <Button
-              variant="contained"
-              sx={{ color: 'white', bgcolor: 'black', mr: 1,
-                '&:hover': {
-                            backgroundColor: 'white',
-                            color: 'black',
-                          }
-               }}
-              onClick={() => setShowOrders(!showOrders)}
-            >
-              {showOrders ? 'Hide Orders' : 'Check Orders'}
-            </Button>
-          )}
-        </Box>
-      </CardContent>
-    </Card>
-    {showOrders && (
-      <Card sx={{ width: '100%', maxWidth: '1200px', padding: 3, boxShadow: 3 }}>
-        <CardContent>
-          <OrdersList />
-        </CardContent>
-      </Card>
-    )}
-  </Box>
-  <AddProduct open={open} setopen={setOpen} />
-</div>
-
+          </CardContent>
+        </Card>
+        {showOrders && (
+          <Card sx={{ width: '100%', maxWidth: '1200px', padding: 3, boxShadow: 3 }}>
+            <CardContent>
+              <OrdersList />
+            </CardContent>
+          </Card>
+        )}
+      </Box>
+      <AddProduct open={openAddProduct} setopen={setOpenAddProduct} />
+      <ProductsManagement open={openProductsManagement} setOpen={setOpenProductsManagement} />
+    </div>
   );
 };
 
