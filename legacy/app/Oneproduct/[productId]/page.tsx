@@ -158,7 +158,7 @@ const One: React.FC = () => {
           precision={0.5}
           defaultValue={product.rating}
           max={5}
-         disabled
+         readOnly
         ></Rating>
         
             

@@ -9,13 +9,13 @@ const CheckoutPage = () => {
   const [expiryDate, setExpiryDate] = useState('');
   const [cvv, setCVV] = useState('');
 
-  const handlePaymentMethodChange = (event: React.ChangeEvent<{ value: any }>) => {
+  const PaymentMethodChange = (event: React.ChangeEvent<{ value: any }>) => {
     setPaymentMethod(event.target.value);
   };
 
-  const handlePayment = async () => {
+  const Payment = async () => {
     try {
-      // Your payment logic here...
+     
       Swal.fire('Payment Successful', 'Your payment has been processed successfully.', 'success');
     } catch (error) {
       console.error('Error processing payment:', error);
@@ -33,7 +33,7 @@ const CheckoutPage = () => {
       cancelButtonText: 'Cancel',
     }).then((result) => {
       if (result.isConfirmed) {
-        handlePayment();
+        Payment();
       }
     });
   };
@@ -49,7 +49,7 @@ const CheckoutPage = () => {
             <FormControl fullWidth>
               <Select
                 value={paymentMethod}
-                onChange={(e) => handlePaymentMethodChange(e)}
+                onChange={(e:any) => PaymentMethodChange(e)}
                 displayEmpty
                 inputProps={{ 'aria-label': 'Payment Method' }}
               >
