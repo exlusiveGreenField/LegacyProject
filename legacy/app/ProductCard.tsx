@@ -16,6 +16,10 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useRouter } from 'next/navigation';
+import { Tooltip } from '@mui/material';
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles((theme) => ({}));
 
 interface Product {
   id: number;
@@ -51,11 +55,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
   setUpdate,
   onRemove,
 }) => {
+  // const classes = useStyles();
   const router = useRouter();
   const [AddToCart, setAddToCart] = useState(false);
   const [userId, setUserId] = useState<number | null>(null);
   const [numOfRate, setNumOfRate] = useState(0);
   const [newRate, setNewRate] = useState<GLfloat>(0);
+  const [val, setVal] = useState(product.rating);
+  const [tipValue, setTipValue] = useState('');
+
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const [counter, setCounter] = useState(
     parseInt(localStorage.getItem('counter') || '0', 10)
@@ -194,18 +202,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
     const productId: number = product.id;
     console.log(rate, 'ratee');
 
-    console.log(
-      'rate',
-      (product.rating * product.numOfRating + rate) / (product.numOfRating + 1)
-    );
+    // Calculate the new rating
+    const newRating =
+      (product.rating * product.numOfRating + rate) / (product.numOfRating + 1);
+
+    const clampedRating = Math.min(newRating, 5);
 
     if (user) {
       try {
         await axios
           .put(`http://localhost:5000/Client/rati/${productId}`, {
-            rating:
-              (product.rating * product.numOfRating + rate) /
-              (product.numOfRating + 1),
+            rating: clampedRating,
+
+            // (product.rating * product.numOfRating + rate) /
+            // (product.numOfRating + 1),
           })
           .then(() => {
             setUpdate ? setUpdate(!update) : null;
@@ -222,6 +232,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       }
     } else router.push('/signup');
   };
+  const tooltips = ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
 
   return (
     <Card
@@ -281,47 +292,76 @@ const ProductCard: React.FC<ProductCardProps> = ({
         </Button>
       </div>
       <CardContent sx={{ textAlign: 'center', padding: '10px' }}>
-        <Typography variant="h6" component="div" sx={{ mb: 1 }}>
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{ mb: 1, fontFamily: 'Arial, sans-serif', fontWeight: 'bold' }}
+        >
           {product.name}
         </Typography>
-
-        <Rating
-          name="simple-controlled"
-          precision={0.5}
-          defaultValue={product.rating}
-          max={5}
-          onClick={(e) => {
-            e.stopPropagation();
-            const value = parseFloat((e.target as HTMLInputElement).value);
-
-            console.log(value);
-
-            if (value) setNewRate(value);
-            if (value) {
-              setNumOfRate(numOfRate + 1);
-              addRatings(value);
-            }
-          }}
-        ></Rating>
-        <Typography>{product.numOfRating}</Typography>
-
+  
         {product.discount ? (
           <>
             <Typography
               variant="body2"
-              sx={{ textDecoration: 'line-through', color: 'black' }}
+              sx={{
+                textDecoration: 'line-through',
+                color: 'black',
+                fontFamily: 'Arial, sans-serif',
+              }}
             >
               ${product.price}
             </Typography>
-            <Typography variant="h6" sx={{ color: 'red' }}>
+            <Typography
+              variant="h6"
+              sx={{ color: 'red', fontFamily: 'Arial, sans-serif', fontWeight: 'bold' }}
+            >
               ${product.discountedPrice}
             </Typography>
           </>
         ) : (
-          <Typography variant="h6" sx={{ color: 'red' }}>
+          <Typography
+            variant="h6"
+            sx={{ color: 'red', fontFamily: 'Arial, sans-serif', fontWeight: 'bold' }}
+          >
             ${product.price}
           </Typography>
         )}
+  
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mt: 1 }}>
+          <Tooltip
+            title={tipValue === '' ? val : tipValue}
+            placement="top"
+            followCursor
+            arrow
+          >
+            <Rating
+              name="simple-controlled"
+              precision={0.5}
+              defaultValue={product.rating}
+              max={5}
+              onClick={(e) => {
+                e.stopPropagation();
+                const value = parseFloat((e.target as HTMLInputElement).value);
+                console.log(value);
+  
+                if (value) setNewRate(value);
+                if (value) {
+                  setNumOfRate(numOfRate + 1);
+                  addRatings(value);
+                }
+              }}
+              onChangeActive={(event, newHover: any) => {
+                setVal(newHover);
+                setTipValue(tooltips[newHover - 1]);
+              }}
+            ></Rating>
+          </Tooltip>
+          <Typography sx={{ ml: 1, fontFamily: 'Arial, sans-serif' }}>
+            ({product.numOfRating})
+          </Typography>
+        </Box>
+  
         {isWishlist ? (
           <IconButton
             sx={{

@@ -21,7 +21,16 @@ const Extra = () => {
 
   const fetchData = async () => {
     try {
-      const ordersResponse = await axios.get<Order[]>('http://localhost:5000/Admin/orders');
+      const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No token found in localStorage');
+        }
+        const config = {
+            headers: {
+                'Authorization': `${token}`
+            }
+        };
+      const ordersResponse = await axios.get<Order[]>('http://localhost:5000/Admin/orders',config);
       const orders: Order[] = ordersResponse.data;
       setTotalOrders(orders.length);
 

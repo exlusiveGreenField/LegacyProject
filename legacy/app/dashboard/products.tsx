@@ -110,7 +110,16 @@ const ProductsTable: React.FC = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get<Product[]>("http://localhost:5000/Admin/products");
+      const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No token found in localStorage');
+        }
+        const config = {
+            headers: {
+                'Authorization': `${token}`
+            }
+        };
+      const response = await axios.get<Product[]>("http://localhost:5000/Admin/products",config);
       setProducts(response.data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -130,7 +139,16 @@ const ProductsTable: React.FC = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await axios.delete<Product[]>(`http://localhost:5000/admin/products/${productId}`);
+          const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No token found in localStorage');
+        }
+        const config = {
+            headers: {
+                'Authorization': `${token}`
+            }
+        };
+          await axios.delete<Product[]>(`http://localhost:5000/admin/products/${productId}`,config);
           setProducts(products.filter((product) => product.id !== productId));
        
           Swal.fire('Deleted!', 'Your product has been deleted.', 'success');
@@ -145,9 +163,18 @@ const ProductsTable: React.FC = () => {
 
   const updateProduct = async () => {
     try {
+      const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No token found in localStorage');
+        }
+        const config = {
+            headers: {
+                'Authorization': `${token}`
+            }
+        };
       await axios.put<Product[]>(
         `http://localhost:5000/admin/products/${currentProduct.id}`,
-        currentProduct
+        currentProduct,config
       );
       fetchProducts();
       handleCloseModify();

@@ -14,14 +14,17 @@ interface User {
   userName: string;
   email: string;
   address: string;
+  CIN:number;
+  
 }
 
 const UserProfile: React.FC = () => {
   const [user, setUser] = useState<Partial<User>>({});
   const [showOrders, setShowOrders] = useState<boolean>(false);
-  const router = useRouter();
   const [open, setOpen] = useState<boolean>(false);
   const [role, setRole] = useState<string | null>(null);
+  const router = useRouter();
+
 
   useEffect(() => {
     setRole(localStorage.getItem('role'))
@@ -37,7 +40,9 @@ const UserProfile: React.FC = () => {
     try {
       const response = await axios.get(`http://localhost:5000/Client/get/${userId}`);
       if (response.data) {
-        setUser(response.data);
+        setUser(response.data)
+        
+        
       } else {
         console.error('No user data found in response:', response);
       }
@@ -49,15 +54,13 @@ const UserProfile: React.FC = () => {
   const logOut = () => {
     setUser({});
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
-      localStorage.removeItem('role');
+      localStorage.clear()
     }
     router.push('/auth/login');
   };
 
   return (
-    <div style={{backgroundColor:'darkred'}}>
+    <div style={{backgroundColor:'darkred',}}>
   <Navbar />
   <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '90%', margin: '0 auto', padding: 3, marginTop: '50px' }}>
     <Card sx={{ width: '100%', maxWidth: '1200px', padding: 3, boxShadow: 3, mb: showOrders ? 3 : 0  }}>
@@ -86,11 +89,12 @@ const UserProfile: React.FC = () => {
           </Box>
         </Box>
         <Divider sx={{ mb: 3 }} />
+         {role==='client'&&<Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+         Address:{user.address}</Typography>}
+         {role==='seller'&&<Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+         CIN:{user.CIN}</Typography>}
         <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-          Address: {user.address}
-        </Typography>
-        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-          Password: ********
+          Password: ********  
         </Typography>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
           <Button

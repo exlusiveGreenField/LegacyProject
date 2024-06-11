@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { AppBar, Toolbar, Button, Box, Divider, Typography } from '@mui/material';
-
+import { useRouter } from 'next/navigation';
 interface SideBarProps {
   onClientsClick: () => void;
   onSellersClick: () => void;
@@ -18,6 +18,11 @@ const SideBar: React.FC<SideBarProps> = ({
   onOrdersClick,
   onChartsClick,
 }) => {
+  const router=useRouter()
+  const Logout = () => {
+      localStorage.clear()
+    router.push('/auth/login');
+  };
   return (
     <AppBar position="fixed" sx={{ backgroundColor: 'white', color: 'black', width: '100%' }}>
       
@@ -47,6 +52,10 @@ const SideBar: React.FC<SideBarProps> = ({
           <Divider orientation="vertical" flexItem />
           <Button color="inherit" onClick={onChartsClick}>
             Statistics
+          </Button>
+          <Divider orientation="vertical" flexItem />
+          <Button color="inherit" onClick={Logout}>
+            Logout
           </Button>
         </Box>
       </Toolbar>

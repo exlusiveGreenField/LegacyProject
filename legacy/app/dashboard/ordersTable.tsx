@@ -28,7 +28,16 @@ const OrdersTable: React.FC = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get<Order[]>("http://localhost:5000/admin/orders");
+      const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No token found in localStorage');
+        }
+        const config = {
+            headers: {
+                'Authorization': `${token}`
+            }
+        };
+      const response = await axios.get<Order[]>("http://localhost:5000/admin/orders",config);
       setOrders(response.data);
     } catch (error) {
       console.error("Error fetching orders:", error);

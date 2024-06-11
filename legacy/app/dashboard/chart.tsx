@@ -59,15 +59,33 @@ const Charts: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const productsResponse = await axios.get<Product[]>('http://localhost:5000/admin/products');
-      const usersResponse = await axios.get<User[]>('http://localhost:5000/admin/users');
-      setProductsData(productsResponse.data);
-      setUsersData(usersResponse.data);
-      console.log(usersResponse);
-    } catch (error) {
-      console.error('Error fetching data:', error);
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No token found in localStorage');
+        }
+        const config = {
+            headers: {
+                'Authorization': `${token}`
+            }
+        };
+        const [productsResponse, usersResponse] = await Promise.all([
+            axios.get('http://localhost:5000/admin/products', config),
+            axios.get('http://localhost:5000/admin/users', config)
+        ]);
+        setProductsData(productsResponse.data);
+        setUsersData(usersResponse.data);
+        console.log(usersResponse);
+    } catch (error:any) {
+        console.error('Error fetching data:', error);
+        if (error.response) {
+            console.error('Response error:', error.response.data);
+        } else if (error.request) {
+            console.error('Request error:', error.request);
+        } else {
+            console.error('Error:', error.message);
+        }
     }
-  };
+};
 
   const productsChartData = {
     labels: productsData.map(product => product.name),

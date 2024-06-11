@@ -12,13 +12,16 @@ interface Product{
    category:string,
    stock:number,
    picture:string,
-   userId:number
+   userId:number,
+   rating:number,
+   numOfRating:number,
 }
 const Ourproducts:React.FC = () => {
 const [products, setProducts] = useState<Product[]>([]);
 const router=useRouter()
 
   useEffect(() => {
+    
     axios.get<Product[]>('http://localhost:5000/Client/products')
       .then(response => {
         setProducts(response.data.slice(0, 8));
@@ -46,6 +49,8 @@ const router=useRouter()
               product={product}
                onClick={() =>{ router.push(`/Oneproduct/${product.id}`)}  }
               isWishlist={false}
+              update={false}
+              onRemove={()=>{}}
             />
           </Grid>
         ))}

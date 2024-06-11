@@ -21,6 +21,7 @@ const AddProduct: React.FC<Props> = ({ open,setopen }) => {
     const [category, setCategory] = useState<string>("");
     const [stock, setStock] = useState<string>("");
     const [description, setDescription] = useState<string>("");
+    const [file, setFile] = useState<File | null>(null); 
     const router = useRouter();
 
     useEffect(() => {
@@ -30,49 +31,88 @@ const AddProduct: React.FC<Props> = ({ open,setopen }) => {
             setUserId(decoded.id);
         }
     }, []);
+const uploadImage = async () => {
+    if (!file) return null;
+    const form = new FormData();
+    form.append("file", file);
+    form.append("upload_preset", "bacemsl");
+    try {
+      const result = await axios.post(
+        `https://api.cloudinary.com/v1_1/dfcbjchqa/image/upload`,
+        form
+      );
+      return result.data.secure_url;
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      return null;
+    }
+  };
 
     const addProduct = async () => {
-        const newProduct = {
-            name,
-            price,
-            picture,
-            category,
-            stock,
-            description,
-            userId
-        };
+    
+    setopen(false);
 
-        try {
-            await axios.post("http://localhost:5000/Seller/add", newProduct);
-            setName("");
-            setPrice("");
-            setPicture("");
-            setCategory("");
-            setStock("");
-            setDescription("");
+    const imageUrl = await uploadImage();
 
-            Swal.fire({
-                title: 'Success!',
-                text: 'Product added successfully',
-                icon: 'success',
-                confirmButtonText: 'OK',
-                customClass: {
-                    confirmButton: 'swal-confirm-button',
-                }
-            }).then(() => {
-                router.push('/shop');
-            });
+    if (!imageUrl) {
+      Swal.fire({
+        title: "Error!",
+        text: "There was an error uploading the image",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+      return;
+    }
 
-        } catch (error) {
-            console.error("Error adding product:", error);
-            Swal.fire({
-                title: 'Error!',
-                text: 'There was an error adding the product',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-        }
+    const newProduct = {
+      name,
+      price,
+      picture: imageUrl, 
+      category,
+      stock,
+      description,
+      userId,
     };
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+          throw new Error('No token found in localStorage');
+      }
+      const config = {
+          headers: {
+              'Authorization': `${token}`
+          }
+      };
+      await axios.post("http://localhost:5000/Seller/add", newProduct,config);
+      // Reset form fields
+      setName("");
+      setPrice("");
+      setCategory("");
+      setStock("");
+      setDescription("");
+      setFile(null); // Reset file state
+      Swal.fire({
+        title: "Success!",
+        text: "Product added successfully",
+        icon: "success",
+        confirmButtonText: "OK",
+        customClass: {
+          confirmButton: "swal-confirm-button",
+        },
+      }).then(() => {
+        router.push("/shop");
+      });
+    } catch (error) {
+      console.error("Error adding product:", error);
+      Swal.fire({
+        title: "Error!",
+        text: "There was an error adding the product",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+    }
+  };
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -144,15 +184,31 @@ const AddProduct: React.FC<Props> = ({ open,setopen }) => {
                             margin="normal"
                             sx={{ '& .Mui-focused': { color: 'red' }, '& .Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'red' } }}
                         />
-                        <TextField
-                            label="Picture URL"
-                            value={picture}
-                            onChange={(e) => setPicture(e.target.value)}
-                            fullWidth
-                            required
-                            margin="normal"
-                            sx={{ '& .Mui-focused': { color: 'red' }, '& .Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'red' } }}
-                        />
+                         <TextField
+              
+              type="file"
+              fullWidth
+              required
+              margin="normal"
+              inputProps={{ accept: "image/*" }}
+              sx={{
+                "& .Mui-focused": { color: "red" },
+                "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "red",
+                },
+              }}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setFile(e.target.files?.[0] || null)
+              }
+            />
+
+            {file && (
+              <img
+                src={URL.createObjectURL(file)}
+                alt="Preview"
+                style={{ maxWidth: "20%", marginBottom: "10px" }}
+              />
+            )}
                         <TextField
                             label="Category"
                             value={category}

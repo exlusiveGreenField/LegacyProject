@@ -44,13 +44,22 @@ interface Sellers{
     password:string;
 
 }
-
+const token = localStorage.getItem('token');
+if (!token) {
+    throw new Error('No token found in localStorage');
+}
+const config = {
+    headers: {
+        'Authorization': `${token}`
+    }
+};
 const Sellers:React.FC = () => {
   const [sellers, setSellers] = useState<Sellers[]>([]);
 
   const fetchUsersByRole = async (role:string) => {
     try {
-      const response = await axios.get<Sellers[]>(`http://localhost:5000/admin/users/${role}`);
+    
+      const response = await axios.get<Sellers[]>(`http://localhost:5000/admin/users/${role}`,config);
       setSellers(response.data);
     } catch (error) {
       console.log('error fetching: ', error);
@@ -59,7 +68,7 @@ const Sellers:React.FC = () => {
 
   const handleDeleteUser = async (userId:number) => {
     try {
-      await axios.delete<Sellers[]>(`http://localhost:5000/Sellers/${userId}`);
+      await axios.delete<Sellers[]>(`http://localhost:5000/admin/users/${userId}`,config);
       setSellers(sellers.filter(seller => seller.id !== userId));
     } catch (error) {
       console.error('Error deleting user: ', error);
@@ -68,7 +77,7 @@ const Sellers:React.FC = () => {
 
   const handleSwitchToClient = async (userId:number) => {
     try {
-      await axios.put<Sellers[]>(`http://localhost:5000/admin/users/switch/${userId}`, { role: 'client' });
+      await axios.put<Sellers[]>(`http://localhost:5000/admin/users/switch/${userId}`, { role: 'client' },config);
       fetchUsersByRole('seller');
     } catch (error) {
       console.error('Error switching user to client: ', error);
